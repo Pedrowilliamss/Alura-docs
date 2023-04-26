@@ -1,27 +1,32 @@
+import { adicionarDocumento, atualizaDocumento, encontraDocumento, obterDocumentos } from "./documentosDb.js";
 import io from "./servidor.js";
 
-const documentos = [
-    {
-        nome: "JavaScript",
-        texto: "texto de javascript..."
-    },
-    {
-        nome: "Node",
-        texto: 'texto de node...'
-    },
-    {
-        nome: "Socekt.io",
-        texto: "texto de socekt..."   
-    }
-]
+
 
 io.on("connection", (socket) => {
-    console.log("Um cliente se conectou! ID:", socket.id);
+    socket.on("obter_documentos", async (devolverDocumentos) => {
+       const documentos = await obterDocumentos();
+       devolverDocumentos(documentos);
+    });
+
+    socket.on("adicionar_documento", async (nome) => {
+        const documentoExiste = (await encontraDocumento(nome)) !== null;
+
+        if (documentoExiste) {
+            socket.emit("documento_existente", nome);
+        } else {
+            const resultado = await adicionarDocumento(nome);
     
-    socket.on("selecionar_documento", (nomeDocumento, devolverTexto) => {
+            if (resultado.acknowledged){
+                io.emit("adicionar_documento_interface", nome);
+            }
+        }
+    })
+    
+    socket.on("selecionar_documento", async (nomeDocumento, devolverTexto) => {
         socket.join(nomeDocumento);
 
-        const documento = encontraDocumento(nomeDocumento)
+        const documento = await encontraDocumento(nomeDocumento)     
         
         if (documento) {
             devolverTexto(documento.texto)
@@ -29,22 +34,14 @@ io.on("connection", (socket) => {
 
     });
     
-    socket.on("texto_editor", ({ texto, nomeDocumento }) => {
-        const documento = encontraDocumento(nomeDocumento)
+    socket.on("texto_editor", async ({ texto, nomeDocumento }) => {
+        const atualizacao = await atualizaDocumento(nomeDocumento,texto);
 
-        if (documento) {
-            documento.texto = texto
+        if (atualizacao.modifiedCount) {
             socket.to(nomeDocumento).emit("texto_editor_clientes", texto);
         }
-        
+
     });
 
 });
 
-function encontraDocumento (nome) {
-    const documento = documentos.find((documento) => {
-        return documento.nome === nome
-    })
-
-    return documento
-}
