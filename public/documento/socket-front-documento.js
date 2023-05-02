@@ -1,19 +1,21 @@
 import { obterCookie } from "../utils/coockies.js";
-import { alertarERedirecionar, atualizaTextoEditor } from "./documento.js";
+import { alertarERedirecionar, atualizaTextoEditor, tratarAutorizacaoSucesso } from "./documento.js";
 
 const socket = io("/usuarios", {
-  auth:{
-     token: obterCookie("tokenJwt")
-  }
+  auth: {
+    token: obterCookie("tokenJwt"),
+  },
 });
 
-socket.on("connect_error",(erro) =>{
-  alert(erro);
-  window.location.href = "/login/index.html"
-})
+socket.on("autorizacao_sucesso", tratarAutorizacaoSucesso);
 
-function selecionarDocumento(nome) {
-  socket.emit("selecionar_documento", nome, (texto) => {
+socket.on("connect_error", (erro) => {
+  alert(erro);
+  window.location.href = "/login/index.html";
+});
+
+function selecionarDocumento(dadosEntrada) {
+  socket.emit("selecionar_documento", dadosEntrada, (texto) => {
     atualizaTextoEditor(texto);
   });
 }
