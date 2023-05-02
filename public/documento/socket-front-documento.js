@@ -7,6 +7,11 @@ const socket = io("/usuarios", {
   }
 });
 
+socket.on("connect_error",(erro) =>{
+  alert(erro);
+  window.location.href = "/login/index.html"
+})
+
 function selecionarDocumento(nome) {
   socket.emit("selecionar_documento", nome, (texto) => {
     atualizaTextoEditor(texto);
