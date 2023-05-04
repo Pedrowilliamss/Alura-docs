@@ -10,4 +10,14 @@ function obterUsuariosDocumento(nomeDocumento) {
     .map((conexao) => conexao.nomeUsuario);
 }
 
-export { adicionarConexao, obterUsuariosDocumento };
+function removerConexao(nomeDocumento, nomeUsuario) {
+    const indice = conexoesDocumentos.findIndex((conexao) => {
+        return conexao.nomeDocumento === nomeDocumento && conexao.nomeUsuario === nomeUsuario
+    })
+
+    if (indice !== -1) {
+        conexoesDocumentos.splice(indice, 1)
+    }
+}
+
+export { adicionarConexao, obterUsuariosDocumento, removerConexao };
