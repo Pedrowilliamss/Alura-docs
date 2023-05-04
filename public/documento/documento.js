@@ -15,7 +15,7 @@ const listaUsuariosConectados = document.getElementById("usuarios-conectados");
 tituloDocumento.textContent = nomeDocumento || "Documento sem título";
 
 function tratarAutorizacaoSucesso(payloadToken) {
-  selecionarDocumento({ nomeDocumento, nomeUsuario: payloadToken.NomeUsuario });
+  selecionarDocumento({ nomeDocumento, nomeUsuario: payloadToken.nomeUsuario });
 }
 
 function atualizarInterfaceUsuarios(usuariosNoDocumento) {
@@ -23,9 +23,9 @@ function atualizarInterfaceUsuarios(usuariosNoDocumento) {
 
   usuariosNoDocumento.forEach((usuario) => {
     listaUsuariosConectados.innerHTML += `
-    <li class="list-group-item">${usuario}</li>
-    `
-  })
+      <li class="list-group-item">${usuario}</li>
+    `;
+  });
 }
 
 textoEditor.addEventListener("keyup", () => {
@@ -50,4 +50,9 @@ function alertarERedirecionar(nome) {
   }
 }
 
-export { atualizaTextoEditor, alertarERedirecionar, tratarAutorizacaoSucesso,atualizarInterfaceUsuarios };
+export {
+  atualizaTextoEditor,
+  alertarERedirecionar,
+  tratarAutorizacaoSucesso,
+  atualizarInterfaceUsuarios,
+};

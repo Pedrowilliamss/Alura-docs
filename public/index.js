@@ -1,5 +1,5 @@
 import { emitirAdicionarDocumento } from "./socket-front-index.js";
-import  { obterCookie, removerCookie }  from "./utils/coockies.js"
+import { obterCookie, removerCookie } from "./utils/cookies.js";
 
 const tokenJwt = obterCookie("tokenJwt");
 
@@ -11,10 +11,10 @@ const inputDocumento = document.getElementById("input-documento");
 const botaoLogout = document.getElementById("botao-logout");
 
 botaoLogout.addEventListener("click", () => {
-  removerCookie("TokenJwt");
-  alert("Usuario deslogado com sucesso");
+  removerCookie("tokenJwt");
+  alert("Usuário deslogado com sucesso!");
   window.location.href = "/login/index.html";
-})
+});
 
 form.addEventListener("submit", (evento) => {
   evento.preventDefault();
